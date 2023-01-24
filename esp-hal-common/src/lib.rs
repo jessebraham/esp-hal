@@ -50,8 +50,7 @@ pub use procmacros as macros;
 //     timer::Timer,
 //     uart::Uart,
 // };
-
-pub use self::{gpio::*, uart::Uart, timer::Timer, delay::Delay, interrupt::*, spi::Spi,};
+pub use self::{delay::Delay, gpio::*, interrupt::*, spi::Spi, timer::Timer, uart::Uart};
 
 // pub mod analog;
 pub mod clock;
