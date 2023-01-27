@@ -36,8 +36,8 @@ pub mod peripherals;
 
 pub use procmacros as macros;
 
-// #[cfg(rmt)]
-// pub use self::pulse_control::PulseControl;
+#[cfg(rmt)]
+pub use self::pulse_control::PulseControl;
 // #[cfg(usb_serial_jtag)]
 // pub use self::usb_serial_jtag::UsbSerialJtag;
 // pub use self::{
@@ -71,8 +71,8 @@ pub mod otg_fs;
 pub mod pcnt;
 pub mod peripheral;
 pub mod prelude;
-// #[cfg(rmt)]
-// pub mod pulse_control;
+#[cfg(rmt)]
+pub mod pulse_control;
 pub mod rng;
 pub mod rom;
 #[cfg(not(esp32c6))]
@@ -86,8 +86,8 @@ pub mod timer;
 pub mod uart;
 #[cfg(usb_serial_jtag)]
 pub mod usb_serial_jtag;
-// #[cfg(rmt)]
-// pub mod utils;
+#[cfg(rmt)]
+pub mod utils;
 
 #[cfg_attr(esp32, path = "cpu_control/esp32.rs")]
 #[cfg_attr(esp32s3, path = "cpu_control/esp32s3.rs")]
