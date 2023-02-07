@@ -94,7 +94,6 @@ fn main() {
             "esp32c6",
             "riscv",
             "single_core",
-            "dac",
             "gdma",
             "i2s",
             "mcpwm",
