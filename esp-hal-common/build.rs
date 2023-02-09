@@ -99,6 +99,7 @@ fn main() {
             "mcpwm",
             "rmt",
             "systimer",
+            "timg0",
             "timg1",
             "usb_serial_jtag",
             "plic",
