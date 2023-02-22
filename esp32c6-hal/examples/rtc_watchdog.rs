@@ -19,7 +19,6 @@ use esp32c6_hal::{
     Rwdt,
 };
 use esp_backtrace as _;
-use esp_println::println;
 
 static RWDT: Mutex<RefCell<Option<Rwdt>>> = Mutex::new(RefCell::new(None));
 
