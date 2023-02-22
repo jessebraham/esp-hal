@@ -1,15 +1,18 @@
 use embedded_hal::watchdog::{Watchdog, WatchdogDisable, WatchdogEnable};
-use fugit::{HertzU32, MicrosDurationU64};
+#[cfg(not(esp32c6))]
+use fugit::HertzU32;
+use fugit::MicrosDurationU64;
 
 use self::rtc::SocResetReason;
-#[cfg(not(any(esp32)))]
+#[cfg(not(esp32c6))]
+use crate::clock::{Clock, XtalClock};
+#[cfg(not(any(esp32, esp32c6)))]
 use crate::efuse::Efuse;
 #[cfg(esp32c6)]
-use crate::peripherals::{LP_AON, LP_CLKRST, LP_WDT, PMU, PCR, TIMG0};
+use crate::peripherals::LP_WDT;
 #[cfg(not(esp32c6))]
 use crate::peripherals::{RTC_CNTL, TIMG0};
 use crate::{
-    clock::{Clock, XtalClock},
     peripheral::{Peripheral, PeripheralRef},
     Cpu,
 };
@@ -99,7 +102,6 @@ impl Clock for RtcSlowClock {
 }
 
 #[cfg(not(esp32c6))]
-#[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 /// Clock source to be calibrated using rtc_clk_cal function
 pub(crate) enum RtcCalSel {
@@ -112,32 +114,6 @@ pub(crate) enum RtcCalSel {
     #[cfg(not(esp32))]
     /// Internal 150 KHz RC oscillator
     RtcCalInternalOsc = 3,
-}
-
-#[cfg(esp32c6)]
-#[allow(dead_code)]
-#[derive(Debug, Clone, Copy, PartialEq)]
-/// Clock source to be calibrated using rtc_clk_cal function
-pub(crate) enum RtcCalSel {
-    /// Currently selected RTC SLOW_CLK
-    RtcCalRtcMux      = -1,
-    /// Currently selected RTC SLOW_CLK
-    RtcCalRcSlow      = 0,
-    /// External 32 KHz XTAL
-    RtcCal32kXtal     = 1,
-    /// TODO
-    RtcCal32kRc       = 2,
-    #[cfg(not(esp32))]
-    /// Internal 150 KHz RC oscillator TODO
-    RtcCalInternalOsc = 3,
-    RtcCalRcFast,
-}
-
-#[cfg(esp32c6)]
-pub(crate) enum RtcCaliClkSel {
-    CaliClkRcSlow = 0,
-    CaliClkRcFast = 1,
-    CaliClk32k    = 2,
 }
 
 pub struct Rtc<'d> {
