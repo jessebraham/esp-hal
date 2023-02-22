@@ -138,14 +138,17 @@ jobs:
         run: cd esp32c6-hal/ && cargo build --examples
       - name: build esp32c6-hal (direct-boot)
         run: cd esp32c6-hal/ && cargo build --examples --features=direct-boot
+      # FIXME: Building using the mcu-boot format currently results in an error.
+      # - name: build esp32c6-hal (mcu-boot)
+      #   run: cd esp32c6-hal/ && cargo build --examples --features=mcu-boot
       # Subsequent steps can just check the examples instead, as we're already
       # confident that they link.
       - name: check esp32c6-hal (common features)
-        run: cd esp32c6-hal/ && cargo check --examples --features=eh1,ufmt
+        run: cargo check --manifest-path=esp32c6-hal/Cargo.toml --target=riscv32imac-unknown-none-elf --examples --features=eh1,smartled,ufmt
       - name: check esp32c6-hal (async, systick)
-        run: cd esp32c6-hal/ && cargo check --example=embassy_hello_world --features=embassy,embassy-time-systick
+        run: cargo check --manifest-path=esp32c6-hal/Cargo.toml --target=riscv32imc-unknown-none-elf --example=embassy_hello_world --features=embassy,embassy-time-systick
       - name: check esp32c6-hal (async, timg0)
-        run: cd esp32c6-hal/ && cargo check --example=embassy_hello_world --features=embassy,embassy-time-timg0
+        run: cargo check --manifest-path=esp32c6-hal/Cargo.toml --target=riscv32imc-unknown-none-elf --example=embassy_hello_world --features=embassy,embassy-time-timg0
       - name: check esp32c6-hal (async, gpio)
         run: cd esp32c6-hal/ && cargo check --example=embassy_wait --features=embassy,embassy-time-systick,async
       - name: check esp32c6-hal (async, spi)
@@ -213,7 +216,6 @@ jobs:
         run: cd esp32s3-hal/ && cargo check --example=embassy_wait --features=embassy,embassy-time-timg0,async
       - name: check esp32s3-hal (async, spi)
         run: cd esp32s3-hal/ && cargo check --example=embassy_spi --features=embassy,embassy-time-timg0,async
-
   # --------------------------------------------------------------------------
   # MSRV
 
