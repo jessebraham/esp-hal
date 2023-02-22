@@ -445,6 +445,7 @@ impl RtcClock {
         }
 
         // TODO: very hacky
+        // in ESP-IDF these are not called in this function but the fields are set
         lp_clkrst
             .clk_to_hp
             .modify(|_, w| w.icg_hp_xtal32k().set_bit());
@@ -502,6 +503,7 @@ impl RtcClock {
         }
 
         // Check if there is already running calibration process
+        // TODO: &mut TIMG0 for calibration
         let timg0 = unsafe { &*TIMG0::ptr() };
 
         if timg0

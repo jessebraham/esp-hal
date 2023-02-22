@@ -43,7 +43,6 @@ fn main() -> ! {
     )
     .unwrap();
 
-
     critical_section::with(|cs| RWDT.borrow_ref_mut(cs).replace(rtc.rwdt));
 
     unsafe {

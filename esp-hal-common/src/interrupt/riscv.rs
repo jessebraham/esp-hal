@@ -335,10 +335,10 @@ mod vectored {
             );
             set_priority(
                 crate::get_core(),
-                core::mem::transmute(*num  as u32),
+                core::mem::transmute(*num as u32),
                 core::mem::transmute((prio as u8) + 1),
             );
-            enable_cpu_interrupt(core::mem::transmute(*num  as u32));
+            enable_cpu_interrupt(core::mem::transmute(*num as u32));
         }
     }
 
