@@ -1334,6 +1334,7 @@ pub trait Instance {
         unsafe {
             let pcr = &*esp32c6::PCR::PTR;
 
+            // use default clock source PLL_F80M_CLK
             pcr.spi2_clkm_conf.modify(|_, w| w.spi2_clkm_sel().bits(1));
         }
 
