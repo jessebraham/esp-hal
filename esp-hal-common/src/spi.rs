@@ -1332,9 +1332,9 @@ pub trait Instance {
 
         #[cfg(esp32c6)]
         unsafe {
-            let pcr =  &*esp32c6::PCR::PTR;
+            let pcr = &*esp32c6::PCR::PTR;
 
-            pcr.spi2_clkm_conf.modify(|_,w| w.spi2_clkm_sel().bits(1));
+            pcr.spi2_clkm_conf.modify(|_, w| w.spi2_clkm_sel().bits(1));
         }
 
         reg_block.ctrl.write(|w| unsafe { w.bits(0) });
