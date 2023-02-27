@@ -694,7 +694,7 @@ impl WatchdogDisable for Rwdt {
     }
 }
 
-//TODO: this can be refactored
+// TODO: this can be refactored
 impl WatchdogEnable for Rwdt {
     type Time = MicrosDurationU64;
 
@@ -717,9 +717,10 @@ impl WatchdogEnable for Rwdt {
                 .modify(|_, w| w.wdt_stg0_hold().bits(timeout_raw));
 
             #[cfg(esp32c6)]
-            (&*LP_WDT::PTR)
-                .config1
-                .modify(|_, w| w.wdt_stg0_hold().bits(timeout_raw >> (1 + Efuse::get_rwdt_multiplier())));
+            (&*LP_WDT::PTR).config1.modify(|_, w| {
+                w.wdt_stg0_hold()
+                    .bits(timeout_raw >> (1 + Efuse::get_rwdt_multiplier()))
+            });
 
             #[cfg(not(any(esp32, esp32c6)))]
             rtc_cntl.wdtconfig1.modify(|_, w| {
