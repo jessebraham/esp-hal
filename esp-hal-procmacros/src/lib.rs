@@ -76,6 +76,7 @@
 #[cfg(feature = "ram")]
 use darling::{ast::NestedMeta, Error as DarlingError, FromMeta};
 use proc_macro::TokenStream;
+#[cfg(feature = "interrupt")]
 use proc_macro_crate::FoundCrate;
 use proc_macro_error::proc_macro_error;
 use quote::quote;
@@ -121,6 +122,8 @@ fn get_hal_crate() -> (
     let hal_crate = crate_name("esp32c6-lp-hal");
     #[cfg(feature = "esp32h2")]
     let hal_crate = crate_name("esp32h2-hal");
+    #[cfg(feature = "esp32p4")]
+    let hal_crate = crate_name("esp32p4-hal");
     #[cfg(feature = "esp32s2")]
     let hal_crate = crate_name("esp32s2-hal");
     #[cfg(feature = "esp32s2-ulp")]
@@ -143,6 +146,8 @@ fn get_hal_crate() -> (
     let hal_crate_name = Ident::new("esp32c6_lp_hal", Span::call_site().into());
     #[cfg(feature = "esp32h2")]
     let hal_crate_name = Ident::new("esp32h2_hal", Span::call_site().into());
+    #[cfg(feature = "esp32p4")]
+    let hal_crate_name = Ident::new("esp32p4_hal", Span::call_site().into());
     #[cfg(feature = "esp32s2")]
     let hal_crate_name = Ident::new("esp32s2_hal", Span::call_site().into());
     #[cfg(feature = "esp32s2-ulp")]
