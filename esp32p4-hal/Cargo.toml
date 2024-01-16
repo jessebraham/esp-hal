@@ -1,0 +1,45 @@
+[package]
+name         = "esp32p4-hal"
+version      = "0.1.0"
+edition      = "2021"
+rust-version = "1.67.0"
+description  = "HAL for ESP32-P4 microcontrollers"
+repository   = "https://github.com/esp-rs/esp-hal"
+license      = "MIT OR Apache-2.0"
+
+keywords = [
+    "embedded",
+    "embedded-hal",
+    "esp",
+    "esp32p4",
+    "no-std",
+]
+categories = [
+    "embedded",
+    "hardware-support",
+    "no-std",
+]
+
+[dependencies]
+esp-hal-common = { version = "0.14.1", features = ["esp32p4"], path = "../esp-hal-common" }
+
+[dev-dependencies]
+esp-backtrace = { version = "0.10.0", features = ["esp32p4", "exception-handler", "panic-handler", "print-uart"] }
+esp-println   = { version = "0.8.0",  features = ["esp32p4"] }
+
+[features]
+default  = ["rt", "vectored", "zero-rtc-bss"]
+rt       = ["esp-hal-common/rt-riscv"]
+vectored = ["esp-hal-common/vectored"]
+
+# Initialize / clear data sections and RTC memory
+zero-rtc-bss  = ["esp-hal-common/rv-zero-rtc-bss"]
+init-data     = ["esp-hal-common/rv-init-data"]
+init-rtc-data = ["esp-hal-common/rv-init-rtc-data"]
+
+[profile.release]
+debug = true
+
+[patch.crates-io]
+esp-backtrace = { path = "/Users/jesse/Work/esp-backtrace" }
+esp-println   = { path = "/Users/jesse/Work/esp-println" }
