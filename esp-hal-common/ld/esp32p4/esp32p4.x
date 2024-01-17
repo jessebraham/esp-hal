@@ -55,11 +55,10 @@ INSERT BEFORE .rwtext;
 SECTIONS {
   /**
    * Bootloader really wants to have separate segments for ROTEXT and RODATA
-   * Thus, we need to force a gap here.
+   * It also needs to be located in a separate 64k flash segment.
    */
   .text_gap (NOLOAD): {
-    . = . + 4;
-    . = ALIGN(4) + 0x20;
+    . = ALIGN(0x10000) + 0x20;
   } > ROM
 }
 INSERT BEFORE .rodata;
