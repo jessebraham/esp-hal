@@ -58,8 +58,6 @@ const SINE: [i16; 64] = [
 
 #[main]
 async fn main(_spawner: Spawner) {
-    #[cfg(feature = "log")]
-    esp_println::logger::init_logger_from_env();
     println!("Init!");
     let peripherals = Peripherals::take();
     let system = peripherals.SYSTEM.split();
