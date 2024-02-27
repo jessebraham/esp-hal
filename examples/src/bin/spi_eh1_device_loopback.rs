@@ -73,9 +73,9 @@ fn main() -> ! {
                 RefCellDevice::new_no_delay(&spi_bus, io.pins.gpio14.into_push_pull_output());
         } else {
             let mut spi_device_2 =
-                RefCellDevice::new_no_delay(&spi_bus, io.pins.gpio4.into_push_pull_output());
+                RefCellDevice::new_no_delay(&spi_bus, io.pins.gpio6.into_push_pull_output());
             let mut spi_device_3 =
-                RefCellDevice::new_no_delay(&spi_bus, io.pins.gpio5.into_push_pull_output());
+                RefCellDevice::new_no_delay(&spi_bus, io.pins.gpio7.into_push_pull_output());
         }
     }
 
