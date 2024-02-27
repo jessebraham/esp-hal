@@ -35,7 +35,7 @@ fn main() -> ! {
     let system = peripherals.SYSTEM.split();
     let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
 
-    // Set GPIO1 as an output, and set its state high initially.
+    // Set GPIO2 as an output, and set its state high initially.
     let io = IO::new(peripherals.GPIO, peripherals.IO_MUX);
     let mut led = io.pins.gpio2.into_push_pull_output();
 
