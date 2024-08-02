@@ -46,7 +46,7 @@
 //! [Commonly Used Setup]: ../index.html#commonly-used-setup
 //! [Inverting TX and RX Pins]: ../uart/index.html#inverting-tx-and-rx-pins
 
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 
 use core::{cell::Cell, marker::PhantomData};
 

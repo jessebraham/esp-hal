@@ -23,7 +23,7 @@
 //!
 //! [Parallel IO TX]: https://github.com/esp-rs/esp-hal/blob/main/examples/src/bin/parl_io_tx.rs
 
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 
 use core::marker::PhantomData;
 

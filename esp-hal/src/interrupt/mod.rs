@@ -73,7 +73,7 @@
 //! }
 //! ```
 
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 
 use core::ops::BitAnd;
 
