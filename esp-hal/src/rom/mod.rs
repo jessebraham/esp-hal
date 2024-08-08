@@ -24,6 +24,7 @@
 //! [MD5 (Message Digest 5)]: ./md5/index.html
 
 #![allow(unused_macros)]
+#![deny(missing_docs)]
 
 #[cfg(any(rom_crc_be, rom_crc_le))]
 pub mod crc;
