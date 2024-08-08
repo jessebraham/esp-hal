@@ -28,11 +28,12 @@ pub enum Error {
     Divisor,
 }
 
-#[cfg(esp32)]
 /// Clock source for HS Timers
+#[cfg(esp32)]
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum HSClockSource {
+    /// APB clock source
     APBClk,
     // TODO RefTick,
 }
@@ -41,6 +42,7 @@ pub enum HSClockSource {
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum LSClockSource {
+    /// APB clock source
     APBClk,
     // TODO SLOWClk
 }
@@ -49,9 +51,13 @@ pub enum LSClockSource {
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Number {
+    /// Timer 0
     Timer0 = 0,
+    /// Timer 1
     Timer1 = 1,
+    /// Timer 2
     Timer2 = 2,
+    /// Timer 3
     Timer3 = 3,
 }
 
@@ -63,45 +69,66 @@ pub mod config {
     #[derive(PartialEq, Eq, Copy, Clone, Debug)]
     #[cfg_attr(feature = "defmt", derive(defmt::Format))]
     pub enum Duty {
+        /// 1-bit duty cycle adjustment
         Duty1Bit = 1,
+        /// 2-bit duty cycle adjustment
         Duty2Bit,
+        /// 3-bit duty cycle adjustment
         Duty3Bit,
+        /// 4-bit duty cycle adjustment
         Duty4Bit,
+        /// 5-bit duty cycle adjustment
         Duty5Bit,
+        /// 6-bit duty cycle adjustment
         Duty6Bit,
+        /// 7-bit duty cycle adjustment
         Duty7Bit,
+        /// 8-bit duty cycle adjustment
         Duty8Bit,
+        /// 9-bit duty cycle adjustment
         Duty9Bit,
+        /// 10-bit duty cycle adjustment
         Duty10Bit,
+        /// 11-bit duty cycle adjustment
         Duty11Bit,
+        /// 12-bit duty cycle adjustment
         Duty12Bit,
+        /// 13-bit duty cycle adjustment
         Duty13Bit,
+        /// 14-bit duty cycle adjustment
         Duty14Bit,
         #[cfg(esp32)]
+        /// 15-bit duty cycle adjustment
         Duty15Bit,
         #[cfg(esp32)]
+        /// 16-bit duty cycle adjustment
         Duty16Bit,
         #[cfg(esp32)]
+        /// 17-bit duty cycle adjustment
         Duty17Bit,
         #[cfg(esp32)]
+        /// 18-bit duty cycle adjustment
         Duty18Bit,
         #[cfg(esp32)]
+        /// 19-bit duty cycle adjustment
         Duty19Bit,
         #[cfg(esp32)]
+        /// 20-bit duty cycle adjustment
         Duty20Bit,
     }
 
     /// Timer configuration
     #[derive(Copy, Clone)]
     pub struct Config<CS> {
-        pub duty: Duty,
-        pub clock_source: CS,
-        pub frequency: HertzU32,
+        pub(crate) duty: Duty,
+        pub(crate) clock_source: CS,
+        pub(crate) frequency: HertzU32,
     }
 }
 
 /// Trait defining the type of timer source
 pub trait TimerSpeed: Speed {
+    /// Clock source type for a given timer
     type ClockSourceType;
 }
 

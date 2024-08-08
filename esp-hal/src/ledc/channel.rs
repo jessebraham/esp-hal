@@ -48,14 +48,22 @@ pub enum Error {
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Number {
+    /// Channel 0
     Channel0 = 0,
+    /// Channel 1
     Channel1 = 1,
+    /// Channel 2
     Channel2 = 2,
+    /// Channel 3
     Channel3 = 3,
+    /// Channel 4
     Channel4 = 4,
+    /// Channel 5
     Channel5 = 5,
+    /// Channel 6
     #[cfg(not(any(esp32c2, esp32c3, esp32c6, esp32h2)))]
     Channel6 = 6,
+    /// Channel 7
     #[cfg(not(any(esp32c2, esp32c3, esp32c6, esp32h2)))]
     Channel7 = 7,
 }
@@ -64,19 +72,22 @@ pub enum Number {
 pub mod config {
     use crate::ledc::timer::{TimerIFace, TimerSpeed};
 
+    /// LEDC pin configuration
     #[derive(Debug, Clone, Copy, PartialEq)]
     #[cfg_attr(feature = "defmt", derive(defmt::Format))]
     pub enum PinConfig {
+        /// Push-pull output
         PushPull,
+        /// Open-drain output
         OpenDrain,
     }
 
     /// Channel configuration
     #[derive(Copy, Clone)]
     pub struct Config<'a, S: TimerSpeed> {
-        pub timer: &'a dyn TimerIFace<S>,
-        pub duty_pct: u8,
-        pub pin_config: PinConfig,
+        pub(crate) timer: &'a dyn TimerIFace<S>,
+        pub(crate) duty_pct: u8,
+        pub(crate) pin_config: PinConfig,
     }
 }
 
@@ -108,6 +119,9 @@ pub trait ChannelHW<O: OutputPin> {
     /// Configure Channel HW except for the duty which is set via
     /// [`Self::set_duty_hw`].
     fn configure_hw(&mut self) -> Result<(), Error>;
+
+    /// Configure Channel HW except for the duty which is set via
+    /// [`Self::set_duty_hw`], and configure the pin as well.
     fn configure_hw_with_pin_config(&mut self, cfg: config::PinConfig) -> Result<(), Error>;
 
     /// Set channel duty HW

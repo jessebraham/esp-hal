@@ -60,6 +60,8 @@
 //! - Source clock selection is not supported
 //! - Interrupts are not supported
 
+#![deny(missing_docs)]
+
 use self::{
     channel::Channel,
     timer::{Timer, TimerSpeed},
@@ -77,6 +79,7 @@ pub mod timer;
 /// Global slow clock source
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 pub enum LSGlobalClkSource {
+    /// APB clock source
     APBClk,
 }
 
@@ -94,7 +97,9 @@ pub struct HighSpeed {}
 /// Used to specify LowSpeed Timer/Channel
 pub struct LowSpeed {}
 
+/// Timer/channel speed
 pub trait Speed {
+    /// Is the timer/channel high-speed?
     const IS_HS: bool;
 }
 
