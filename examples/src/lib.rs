@@ -6,8 +6,15 @@ pub fn cycles() -> u64 {
         esp_hal::xtensa_lx::timer::get_cycle_count() as u64
     }
 
-    #[cfg(not(feature = "esp32"))]
+    // FIXME
+    #[cfg(not(any(feature = "esp32", feature = "esp32p4")))]
     {
         esp_hal::timer::systimer::SystemTimer::now()
+    }
+
+    // FIXME
+    #[cfg(feature = "esp32p4")]
+    {
+        0
     }
 }

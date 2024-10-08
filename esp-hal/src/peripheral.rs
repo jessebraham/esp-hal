@@ -170,6 +170,7 @@ mod peripheral_macros {
     #[macro_export]
     macro_rules! impl_dma_eligible {
         ($name:ident,$dma:ident) => {
+            #[cfg(any(gdma, pdma))]
             impl $crate::dma::DmaEligible for $name {
                 const DMA_PERIPHERAL: $crate::dma::DmaPeripheral = $crate::dma::DmaPeripheral::$dma;
             }

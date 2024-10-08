@@ -81,6 +81,7 @@ use crate::rtc_cntl::RtcClock;
 #[cfg_attr(esp32c3, path = "clocks_ll/esp32c3.rs")]
 #[cfg_attr(esp32c6, path = "clocks_ll/esp32c6.rs")]
 #[cfg_attr(esp32h2, path = "clocks_ll/esp32h2.rs")]
+#[cfg_attr(esp32p4, path = "clocks_ll/esp32p4.rs")]
 #[cfg_attr(esp32s2, path = "clocks_ll/esp32s2.rs")]
 #[cfg_attr(esp32s3, path = "clocks_ll/esp32s3.rs")]
 pub(crate) mod clocks_ll;
@@ -122,7 +123,7 @@ pub enum CpuClock {
     Clock160MHz = 160,
 
     /// 240MHz CPU clock
-    #[cfg(xtensa)]
+    #[cfg(any(esp32p4, xtensa))] // FIXME?
     Clock240MHz = 240,
 }
 
@@ -535,6 +536,18 @@ impl Clocks {
             crypto_clock: HertzU32::MHz(96),
             pll_96m_clock: HertzU32::MHz(96),
         }
+    }
+}
+
+#[cfg(esp32p4)]
+impl Clocks {
+    fn measure_xtal_frequency() -> XtalClock {
+        todo!()
+    }
+
+    /// Configure the CPU clock speed.
+    pub(crate) fn configure(cpu_clock_speed: CpuClock) -> Self {
+        todo!()
     }
 }
 
