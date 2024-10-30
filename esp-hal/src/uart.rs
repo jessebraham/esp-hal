@@ -145,7 +145,7 @@ use crate::{
 const CONSOLE_UART_NUM: usize = 0;
 const UART_FIFO_SIZE: u16 = 128;
 
-#[cfg(not(any(esp32, esp32s2)))]
+#[cfg(not(any(esp32, esp32p4, esp32s2)))]
 use crate::soc::constants::RC_FAST_CLK;
 #[cfg(any(esp32, esp32s2))]
 use crate::soc::constants::REF_TICK;
@@ -204,7 +204,7 @@ pub enum ClockSource {
     /// APB_CLK clock source (default for UART on all the chips except of
     /// esp32c6 and esp32h2)
     Apb,
-    #[cfg(not(any(esp32, esp32s2)))]
+    #[cfg(not(any(esp32, esp32p4, esp32s2)))]
     /// RC_FAST_CLK clock source (17.5 MHz)
     RcFast,
     #[cfg(not(any(esp32, esp32s2)))]
@@ -218,7 +218,6 @@ pub enum ClockSource {
 
 /// UART Configuration
 pub mod config {
-
     // see <https://github.com/espressif/esp-idf/blob/8760e6d2a/components/esp_driver_uart/src/uart.c#L61>
     const UART_FULL_THRESH_DEFAULT: u16 = 120;
     // see <https://github.com/espressif/esp-idf/blob/8760e6d2a/components/esp_driver_uart/src/uart.c#L63>
@@ -707,6 +706,8 @@ where
         const MAX_THRHD: u16 = 0xFF;
         #[cfg(any(esp32c3, esp32c2, esp32s2))]
         const MAX_THRHD: u16 = 0x1FF;
+        #[cfg(esp32p4)]
+        const MAX_THRHD: u16 = 0x0; // FIXME
         #[cfg(esp32s3)]
         const MAX_THRHD: u16 = 0x3FF;
 
@@ -714,7 +715,7 @@ where
             return Err(Error::InvalidArgument);
         }
 
-        #[cfg(any(esp32, esp32c6, esp32h2))]
+        #[cfg(any(esp32, esp32c6, esp32h2, esp32p4))]
         let threshold: u8 = threshold as u8;
 
         T::register_block()
@@ -748,7 +749,7 @@ where
         cfg_if::cfg_if! {
             if #[cfg(esp32)] {
                 let reg_thrhd = &T::register_block().conf1();
-            } else if #[cfg(any(esp32c6, esp32h2))] {
+            } else if #[cfg(any(esp32c6, esp32h2, esp32p4))] {
                 let reg_thrhd = &T::register_block().tout_conf();
             } else {
                 let reg_thrhd = &T::register_block().mem_conf();
@@ -756,7 +757,7 @@ where
         }
 
         cfg_if::cfg_if! {
-            if #[cfg(any(esp32c6, esp32h2))] {
+            if #[cfg(any(esp32c6, esp32h2, esp32p4))] {
                 let reg_en = &T::register_block().tout_conf();
             } else {
                 let reg_en = &T::register_block().conf1();
@@ -897,7 +898,7 @@ where
     /// Configures the AT-CMD detection settings
     #[allow(clippy::useless_conversion)]
     pub fn set_at_cmd(&mut self, config: config::AtCmdConfig) {
-        #[cfg(not(any(esp32, esp32s2)))]
+        #[cfg(not(any(esp32, esp32p4, esp32s2)))] // FIXME?
         T::register_block()
             .clk_conf()
             .modify(|_, w| w.sclk_en().clear_bit());
@@ -927,7 +928,7 @@ where
                 .write(|w| unsafe { w.rx_gap_tout().bits(gap_timeout.into()) });
         }
 
-        #[cfg(not(any(esp32, esp32s2)))]
+        #[cfg(not(any(esp32, esp32p4, esp32s2)))] // FIXME?
         T::register_block()
             .clk_conf()
             .modify(|_, w| w.sclk_en().set_bit());
@@ -1204,6 +1205,11 @@ where
         Self::sync_regs();
     }
 
+    #[cfg(esp32p4)]
+    fn change_baud_internal(&self, baudrate: u32, clock_source: ClockSource) {
+        // TODO: Implement me :)
+    }
+
     #[cfg(any(esp32, esp32s2))]
     fn change_baud_internal(&self, baudrate: u32, clock_source: ClockSource) {
         let clocks = Clocks::get();
@@ -1270,7 +1276,7 @@ where
         // Ideally this should be configurable once we have a solution for https://github.com/esp-rs/esp-hal/issues/1111
         // see https://github.com/espressif/esp-idf/blob/5f4249357372f209fdd57288265741aaba21a2b1/components/esp_driver_uart/src/uart.c#L179
         if T::uart_number() != CONSOLE_UART_NUM {
-            #[cfg(not(any(esp32, esp32s2)))]
+            #[cfg(not(any(esp32, esp32p4, esp32s2)))]
             T::register_block()
                 .clk_conf()
                 .modify(|_, w| w.rst_core().set_bit());
@@ -1278,7 +1284,7 @@ where
             // reset peripheral
             T::reset_peripheral();
 
-            #[cfg(not(any(esp32, esp32s2)))]
+            #[cfg(not(any(esp32, esp32p4, esp32s2)))]
             T::register_block()
                 .clk_conf()
                 .modify(|_, w| w.rst_core().clear_bit());
@@ -1579,6 +1585,10 @@ impl_instance!(UART0, 0, U0TXD, U0RXD, U0CTS, U0RTS, Uart0);
 impl_instance!(UART1, 1, U1TXD, U1RXD, U1CTS, U1RTS, Uart1);
 #[cfg(uart2)]
 impl_instance!(UART2, 2, U2TXD, U2RXD, U2CTS, U2RTS, Uart2);
+#[cfg(uart3)]
+impl_instance!(UART3, 3, U3TXD, U3RXD, U3CTS, U3RTS, Uart3);
+#[cfg(uart4)]
+impl_instance!(UART4, 4, U4TXD, U4RXD, U4CTS, U4RTS, Uart4);
 
 impl<T, M> ufmt_write::uWrite for Uart<'_, T, M>
 where
