@@ -8,6 +8,7 @@ use std::{
 use anyhow::{bail, ensure, Context as _, Result};
 use clap::{Args, Parser};
 use esp_metadata::{Arch, Chip, Config};
+use markdown::mdast::Node;
 use minijinja::Value;
 use strum::IntoEnumIterator;
 use xtask::{
@@ -23,6 +24,9 @@ use xtask::{
 
 #[derive(Debug, Parser)]
 enum Cli {
+    /// Analyze each package's `CHANGELOG.md` to try and determine how much to
+    /// increment the version by.
+    AnalyzeChangelog(AnalyzeChangelogArgs),
     /// Build documentation for the specified chip.
     BuildDocumentationIndex(BuildDocumentationArgs),
     /// Build documentation for the specified chip.
@@ -53,6 +57,13 @@ enum Cli {
     RunTests(TestArgs),
     /// Run all ELFs in a folder.
     RunElfs(RunElfArgs),
+}
+
+#[derive(Debug, Args)]
+struct AnalyzeChangelogArgs {
+    /// Package(s) to target.
+    #[arg(value_enum, default_values_t = Package::iter())]
+    packages: Vec<Package>,
 }
 
 #[derive(Debug, Args)]
@@ -182,6 +193,7 @@ fn main() -> Result<()> {
     let workspace = std::env::current_dir()?;
 
     match Cli::parse() {
+        Cli::AnalyzeChangelog(args) => analyze_changelogs(&workspace, args),
         Cli::BuildDocumentation(args) => build_documentation(&workspace, args),
         Cli::BuildDocumentationIndex(args) => build_documentation_index(&workspace, args),
         Cli::BuildExamples(args) => examples(&workspace, args, CargoAction::Build),
@@ -201,6 +213,110 @@ fn main() -> Result<()> {
 
 // ----------------------------------------------------------------------------
 // Subcommands
+
+fn analyze_changelogs(workspace: &Path, args: AnalyzeChangelogArgs) -> Result<()> {
+    for package in args.packages {
+        // Determine if the current major version of the package being analyzed is 0:
+        let package_version = xtask::package_version(workspace, package)?;
+        let major_version_0 = package_version.major == 0;
+
+        // Parse the `CHANGELOG.md` file for the package being analyzed:
+        let changelog_path = workspace.join(package.to_string()).join("CHANGELOG.md");
+        if !changelog_path.exists() {
+            continue;
+        }
+
+        let changelog = fs::read_to_string(changelog_path)?;
+        let changelog = parse_changelog::parse(&changelog)?;
+
+        // Get the latest "release" from `CHANGELOG.md`, which should be "Unreleased":
+        let release = &changelog[0];
+        if release.title_no_link().to_lowercase() != "unreleased" {
+            log::warn!(
+                "Latest release in `CHANGELOG.md` for '{package}' is not \"Unreleased\", skipping"
+            );
+            continue;
+        }
+
+        // Get the release notes for the Unreleased "release":
+        let release = markdown::to_mdast(&release.notes, &markdown::ParseOptions::default())
+            .expect("Unable to parse markdown");
+
+        let mut version_change: Option<Version> = None;
+        if let Some(children) = release.children() {
+            let mut i = 0;
+            loop {
+                // We expect at least one heading and some list of changes to be present; if
+                // this is not the case then there are no changes specified for the release:
+                if i >= children.len().saturating_sub(1) {
+                    break;
+                }
+
+                let Node::Heading(heading) = &children[i] else {
+                    bail!("Expected `Node::Heading(..), found something else");
+                };
+                let Node::Text(text) = &heading.children[0] else {
+                    bail!("Expected `Node::Text(..)`, found something else");
+                };
+
+                i += 1;
+
+                if let Node::List(list) = &children[i] {
+                    if !list.children.is_empty() {
+                        match text.value.to_lowercase().as_str() {
+                            "added" => {
+                                // Newly added features should be compatible with a minor release,
+                                // regardless of the current major version:
+                                version_change = Some(Version::Minor);
+                            }
+                            "changed" => {
+                                // This is pretty much impossible to get correct, but if the major
+                                // version is still 0 and changes are made, this *should* be
+                                // compatible with a minor release, otherwise... who knows, but
+                                // probably requires a major release:
+                                if major_version_0 && version_change != Some(Version::Major) {
+                                    version_change = Some(Version::Minor);
+                                } else {
+                                    version_change = Some(Version::Major);
+                                }
+                            }
+                            "removed" => {
+                                // If the major version is still 0, then breaking changes are
+                                // signified by a minor release, otherwise a new major release is
+                                // required:
+                                if major_version_0 && version_change != Some(Version::Major) {
+                                    version_change = Some(Version::Minor);
+                                } else {
+                                    version_change = Some(Version::Major);
+                                }
+                            }
+                            "fixed" => match version_change {
+                                // Changes listed in the "Fixed" section imply a patch release, but
+                                // only if there are not any other changes requiring a larger bump
+                                // to the version:
+                                Some(version) if version > Version::Patch => {}
+                                _ => {
+                                    version_change = Some(Version::Patch);
+                                }
+                            },
+                            _ => {}
+                        }
+                    }
+
+                    i += 1;
+                }
+            }
+        }
+
+        // If a version change is required (i.e. changes were found), print how much the
+        // version number should be bumped:
+        if let Some(version) = version_change {
+            println!("{package}: {version}");
+        }
+    }
+
+    Ok(())
+}
 
 fn examples(workspace: &Path, mut args: ExampleArgs, action: CargoAction) -> Result<()> {
     // Ensure that the package/chip combination provided are valid:
