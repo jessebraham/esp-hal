@@ -126,7 +126,7 @@
 //! [embedded-hal-async]: https://docs.rs/embedded-hal-async/latest/embedded_hal_async/
 //! [embedded-io-async]: https://docs.rs/embedded-io-async/latest/embedded_io_async/
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 use core::task::Poll;
 use core::{convert::Infallible, marker::PhantomData};
@@ -549,7 +549,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::ErrorType for UsbSerialJtag<'_, Dm>
 where
@@ -558,7 +558,7 @@ where
     type Error = Error;
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::ErrorType for UsbSerialJtagTx<'_, Dm>
 where
@@ -567,7 +567,7 @@ where
     type Error = Error;
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::ErrorType for UsbSerialJtagRx<'_, Dm>
 where
@@ -576,7 +576,7 @@ where
     type Error = Error;
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::Read for UsbSerialJtag<'_, Dm>
 where
@@ -587,7 +587,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::Read for UsbSerialJtagRx<'_, Dm>
 where
@@ -603,7 +603,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::Write for UsbSerialJtag<'_, Dm>
 where
@@ -618,7 +618,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::Write for UsbSerialJtagTx<'_, Dm>
 where
@@ -639,14 +639,14 @@ where
 static WAKER_TX: AtomicWaker = AtomicWaker::new();
 static WAKER_RX: AtomicWaker = AtomicWaker::new();
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 #[must_use = "futures do nothing unless you `.await` or poll them"]
 struct UsbSerialJtagWriteFuture<'d> {
     peripheral: PeripheralRef<'d, USB_DEVICE>,
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<'d> UsbSerialJtagWriteFuture<'d> {
     fn new(peripheral: impl Peripheral<P = USB_DEVICE> + 'd) -> Self {
@@ -671,7 +671,7 @@ impl<'d> UsbSerialJtagWriteFuture<'d> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl core::future::Future for UsbSerialJtagWriteFuture<'_> {
     type Output = ();
@@ -690,13 +690,13 @@ impl core::future::Future for UsbSerialJtagWriteFuture<'_> {
 }
 
 #[must_use = "futures do nothing unless you `.await` or poll them"]
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 struct UsbSerialJtagReadFuture<'d> {
     peripheral: PeripheralRef<'d, USB_DEVICE>,
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<'d> UsbSerialJtagReadFuture<'d> {
     fn new(peripheral: impl Peripheral<P = USB_DEVICE> + 'd) -> Self {
@@ -721,7 +721,7 @@ impl<'d> UsbSerialJtagReadFuture<'d> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl core::future::Future for UsbSerialJtagReadFuture<'_> {
     type Output = ();
@@ -758,7 +758,7 @@ impl<'d> UsbSerialJtag<'d, Async> {
 }
 
 impl UsbSerialJtagTx<'_, Async> {
-    #[cfg(any(doc, feature = "unstable"))]
+    #[cfg(feature = "unstable")]
     #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
     async fn write_bytes_async(&mut self, words: &[u8]) -> Result<(), Error> {
         for chunk in words.chunks(64) {
@@ -775,7 +775,7 @@ impl UsbSerialJtagTx<'_, Async> {
         Ok(())
     }
 
-    #[cfg(any(doc, feature = "unstable"))]
+    #[cfg(feature = "unstable")]
     #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
     async fn flush_tx_async(&mut self) -> Result<(), Error> {
         if self
@@ -793,7 +793,7 @@ impl UsbSerialJtagTx<'_, Async> {
 }
 
 impl UsbSerialJtagRx<'_, Async> {
-    #[cfg(any(doc, feature = "unstable"))]
+    #[cfg(feature = "unstable")]
     #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
     async fn read_bytes_async(&mut self, buf: &mut [u8]) -> Result<usize, Error> {
         if buf.is_empty() {
@@ -810,7 +810,7 @@ impl UsbSerialJtagRx<'_, Async> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io_async::Write for UsbSerialJtag<'_, Async> {
     async fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
@@ -822,7 +822,7 @@ impl embedded_io_async::Write for UsbSerialJtag<'_, Async> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io_async::Write for UsbSerialJtagTx<'_, Async> {
     async fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
@@ -836,7 +836,7 @@ impl embedded_io_async::Write for UsbSerialJtagTx<'_, Async> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io_async::Read for UsbSerialJtag<'_, Async> {
     async fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
@@ -844,7 +844,7 @@ impl embedded_io_async::Read for UsbSerialJtag<'_, Async> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io_async::Read for UsbSerialJtagRx<'_, Async> {
     async fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {

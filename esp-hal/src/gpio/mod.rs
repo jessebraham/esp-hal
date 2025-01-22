@@ -878,7 +878,7 @@ macro_rules! io_type {
     (Analog, $gpionum:literal) => {
         // FIXME: the implementation shouldn't be in the GPIO module
         #[cfg(any(esp32c2, esp32c3, esp32c6, esp32h2))]
-        #[cfg(any(doc, feature = "unstable"))]
+        #[cfg(feature = "unstable")]
         #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
         impl $crate::gpio::AnalogPin for $crate::gpio::GpioPin<$gpionum> {
             /// Configures the pin for analog mode.

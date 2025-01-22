@@ -202,7 +202,7 @@ impl_display! {
     Other => "A different error occurred. The original error may contain more information",
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl From<ErrorKind> for embedded_can::ErrorKind {
     fn from(value: ErrorKind) -> Self {
@@ -218,7 +218,7 @@ impl From<ErrorKind> for embedded_can::ErrorKind {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_can::Error for ErrorKind {
     fn kind(&self) -> embedded_can::ErrorKind {
@@ -281,7 +281,7 @@ impl StandardId {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl From<StandardId> for embedded_can::StandardId {
     fn from(value: StandardId) -> Self {
@@ -289,7 +289,7 @@ impl From<StandardId> for embedded_can::StandardId {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl From<embedded_can::StandardId> for StandardId {
     fn from(value: embedded_can::StandardId) -> Self {
@@ -345,7 +345,7 @@ impl ExtendedId {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl From<ExtendedId> for embedded_can::ExtendedId {
     fn from(value: ExtendedId) -> Self {
@@ -353,7 +353,7 @@ impl From<ExtendedId> for embedded_can::ExtendedId {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl From<embedded_can::ExtendedId> for ExtendedId {
     fn from(value: embedded_can::ExtendedId) -> Self {
@@ -385,7 +385,7 @@ impl From<ExtendedId> for Id {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl From<Id> for embedded_can::Id {
     fn from(value: Id) -> Self {
@@ -396,7 +396,7 @@ impl From<Id> for embedded_can::Id {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl From<embedded_can::Id> for Id {
     fn from(value: embedded_can::Id) -> Self {
@@ -499,7 +499,7 @@ impl EspTwaiFrame {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_can::Frame for EspTwaiFrame {
     fn new(id: impl Into<embedded_can::Id>, data: &[u8]) -> Option<Self> {
@@ -1215,7 +1215,7 @@ pub enum EspTwaiError {
     EmbeddedHAL(ErrorKind),
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_can::Error for EspTwaiError {
     fn kind(&self) -> embedded_can::ErrorKind {
@@ -1259,7 +1259,7 @@ unsafe fn copy_to_data_register(dest: *mut u32, src: &[u8]) {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 impl<Dm> embedded_can::nb::Can for Twai<'_, Dm>
 where
     Dm: DriverMode,

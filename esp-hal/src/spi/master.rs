@@ -38,7 +38,7 @@ use core::marker::PhantomData;
 
 #[instability::unstable]
 pub use dma::*;
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 use embassy_embedded_hal::SetConfig;
 use enumset::{EnumSet, EnumSetType};
 use fugit::HertzU32;
@@ -855,7 +855,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> SetConfig for Spi<'_, Dm>
 where
@@ -1441,7 +1441,7 @@ mod dma {
         }
     }
 
-    #[cfg(any(doc, feature = "unstable"))]
+    #[cfg(feature = "unstable")]
     #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
     impl<Dm> SetConfig for SpiDma<'_, Dm>
     where
@@ -2075,7 +2075,7 @@ mod dma {
         }
     }
 
-    #[cfg(any(doc, feature = "unstable"))]
+    #[cfg(feature = "unstable")]
     #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
     impl<Dm> SetConfig for SpiDmaBus<'_, Dm>
     where
@@ -2091,7 +2091,7 @@ mod dma {
 
     /// Async functionality
     mod asynch {
-        #[cfg(any(doc, feature = "unstable"))]
+        #[cfg(feature = "unstable")]
         use core::cmp::min;
         use core::ops::{Deref, DerefMut};
 
@@ -2137,7 +2137,7 @@ mod dma {
             }
         }
 
-        #[cfg(any(doc, feature = "unstable"))]
+        #[cfg(feature = "unstable")]
         #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
         impl SpiDmaBus<'_, Async> {
             /// Fill the given buffer with data from the bus.
@@ -2268,7 +2268,7 @@ mod dma {
             }
         }
 
-        #[cfg(any(doc, feature = "unstable"))]
+        #[cfg(feature = "unstable")]
         #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
         impl embedded_hal_async::spi::SpiBus for SpiDmaBus<'_, Async> {
             async fn read(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
@@ -2295,13 +2295,13 @@ mod dma {
     }
 
     mod ehal1 {
-        #[cfg(any(doc, feature = "unstable"))]
+        #[cfg(feature = "unstable")]
         use embedded_hal::spi::{ErrorType, SpiBus};
 
-        #[cfg(any(doc, feature = "unstable"))]
+        #[cfg(feature = "unstable")]
         use super::*;
 
-        #[cfg(any(doc, feature = "unstable"))]
+        #[cfg(feature = "unstable")]
         #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
         impl<Dm> ErrorType for SpiDmaBus<'_, Dm>
         where
@@ -2310,7 +2310,7 @@ mod dma {
             type Error = Error;
         }
 
-        #[cfg(any(doc, feature = "unstable"))]
+        #[cfg(feature = "unstable")]
         #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
         impl<Dm> SpiBus for SpiDmaBus<'_, Dm>
         where

@@ -116,7 +116,7 @@
 
 use core::{marker::PhantomData, sync::atomic::Ordering, task::Poll};
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 use embassy_embedded_hal::SetConfig;
 use enumset::{EnumSet, EnumSetType};
 use portable_atomic::AtomicBool;
@@ -187,7 +187,7 @@ impl core::fmt::Display for Error {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io::Error for Error {
     fn kind(&self) -> embedded_io::ErrorKind {
@@ -485,7 +485,7 @@ impl core::fmt::Display for ConfigError {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> SetConfig for Uart<'_, Dm>
 where
@@ -499,7 +499,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> SetConfig for UartRx<'_, Dm>
 where
@@ -513,7 +513,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> SetConfig for UartTx<'_, Dm>
 where
@@ -1369,25 +1369,25 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::ErrorType for Uart<'_, Dm> {
     type Error = Error;
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::ErrorType for UartTx<'_, Dm> {
     type Error = Error;
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::ErrorType for UartRx<'_, Dm> {
     type Error = Error;
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::Read for Uart<'_, Dm>
 where
@@ -1398,7 +1398,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::Read for UartRx<'_, Dm>
 where
@@ -1417,7 +1417,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::ReadReady for Uart<'_, Dm>
 where
@@ -1428,7 +1428,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::ReadReady for UartRx<'_, Dm>
 where
@@ -1439,7 +1439,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::Write for Uart<'_, Dm>
 where
@@ -1454,7 +1454,7 @@ where
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm> embedded_io::Write for UartTx<'_, Dm>
 where
@@ -1763,7 +1763,7 @@ impl UartRx<'_, Async> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io_async::Read for Uart<'_, Async> {
     /// In contrast to the documentation of embedded_io_async::Read, this
@@ -1774,7 +1774,7 @@ impl embedded_io_async::Read for Uart<'_, Async> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io_async::Read for UartRx<'_, Async> {
     /// In contrast to the documentation of embedded_io_async::Read, this
@@ -1785,7 +1785,7 @@ impl embedded_io_async::Read for UartRx<'_, Async> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io_async::Write for Uart<'_, Async> {
     async fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
@@ -1797,7 +1797,7 @@ impl embedded_io_async::Write for Uart<'_, Async> {
     }
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl embedded_io_async::Write for UartTx<'_, Async> {
     async fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {

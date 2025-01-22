@@ -27,7 +27,7 @@ use core::{
     task::{Context, Poll},
 };
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 use embassy_embedded_hal::SetConfig;
 use embedded_hal::i2c::Operation as EhalOperation;
 use enumset::{EnumSet, EnumSetType};
@@ -449,7 +449,7 @@ pub struct I2c<'d, Dm: DriverMode> {
     scl_pin: PinGuard,
 }
 
-#[cfg(any(doc, feature = "unstable"))]
+#[cfg(feature = "unstable")]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl<Dm: DriverMode> SetConfig for I2c<'_, Dm> {
     type Config = Config;
