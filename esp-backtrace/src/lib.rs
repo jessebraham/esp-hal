@@ -204,6 +204,11 @@ fn is_valid_ram_address(address: u32) -> bool {
         return false;
     }
 
+    #[cfg(feature = "esp32c5")]
+    if !(0x4080_000..=0x4086_0000).contains(&address) {
+        return false;
+    }
+
     #[cfg(feature = "esp32c6")]
     if !(0x4080_0000..=0x4088_0000).contains(&address) {
         return false;
