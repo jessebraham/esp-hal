@@ -2,19 +2,23 @@
 
 use core::ops::Range;
 
+#[allow(unused)]
 use portable_atomic::{AtomicU8, Ordering};
 
+#[allow(unused)]
 pub use self::implementation::*;
 
 #[cfg_attr(esp32, path = "esp32/mod.rs")]
 #[cfg_attr(esp32c2, path = "esp32c2/mod.rs")]
 #[cfg_attr(esp32c3, path = "esp32c3/mod.rs")]
+#[cfg_attr(esp32c5, path = "esp32c5/mod.rs")]
 #[cfg_attr(esp32c6, path = "esp32c6/mod.rs")]
 #[cfg_attr(esp32h2, path = "esp32h2/mod.rs")]
 #[cfg_attr(esp32s2, path = "esp32s2/mod.rs")]
 #[cfg_attr(esp32s3, path = "esp32s3/mod.rs")]
 mod implementation;
 
+#[cfg(soc_has_efuse)]
 mod efuse_field;
 
 #[cfg(feature = "psram")]
@@ -66,6 +70,7 @@ pub enum SetMacError {
     AlreadySet,
 }
 
+#[cfg(soc_has_efuse)]
 #[cfg_attr(not(feature = "unstable"), allow(unused))]
 impl self::efuse::Efuse {
     /// Set the base mac address

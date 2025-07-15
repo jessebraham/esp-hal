@@ -124,6 +124,7 @@ pub enum Peripheral {
 
 impl Peripheral {
     const KEEP_ENABLED: &[Peripheral] = &[
+        #[cfg(soc_has_uart0)]
         Peripheral::Uart0,
         #[cfg(soc_has_usb_device)]
         Peripheral::UsbDevice,
@@ -239,12 +240,14 @@ pub(crate) fn disable_peripherals() {
     })
 }
 
+#[allow(unused)]
 #[derive(Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub(crate) struct PeripheralGuard {
     peripheral: Peripheral,
 }
 
+#[allow(unused)]
 impl PeripheralGuard {
     pub(crate) fn new_with(p: Peripheral, init: fn()) -> Self {
         if !Peripheral::KEEP_ENABLED.contains(&p) && PeripheralClockControl::enable(p) {
@@ -268,10 +271,12 @@ impl Drop for PeripheralGuard {
     }
 }
 
+#[allow(unused)]
 #[derive(Debug)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub(crate) struct GenericPeripheralGuard<const P: u8> {}
 
+#[allow(unused)]
 impl<const P: u8> GenericPeripheralGuard<P> {
     pub(crate) fn new_with(init: fn(CriticalSection<'_>)) -> Self {
         let peripheral = unwrap!(Peripheral::try_from(P));
@@ -314,7 +319,7 @@ impl<const P: u8> Drop for GenericPeripheralGuard<P> {
 /// Controls the enablement of peripheral clocks.
 pub(crate) struct PeripheralClockControl;
 
-#[cfg(not(any(esp32c6, esp32h2)))]
+#[cfg(not(any(esp32c5, esp32c6, esp32h2)))]
 impl PeripheralClockControl {
     fn enable_internal(peripheral: Peripheral, enable: bool, _cs: CriticalSection<'_>) {
         debug!("Enable {:?} {}", peripheral, enable);
@@ -487,7 +492,7 @@ impl PeripheralClockControl {
     }
 }
 
-#[cfg(any(esp32c6, esp32h2))]
+#[cfg(any(esp32c5, esp32c6, esp32h2))]
 impl PeripheralClockControl {
     fn enable_internal(peripheral: Peripheral, enable: bool, _cs: CriticalSection<'_>) {
         debug!("Enable {:?} {}", peripheral, enable);
@@ -664,7 +669,7 @@ impl PeripheralClockControl {
     }
 }
 
-#[cfg(not(any(esp32c6, esp32h2)))]
+#[cfg(not(any(esp32c5, esp32c6, esp32h2)))]
 /// Resets the given peripheral
 pub(crate) fn assert_peri_reset(peripheral: Peripheral, reset: bool) {
     let system = SYSTEM::regs();
@@ -829,7 +834,7 @@ pub(crate) fn assert_peri_reset(peripheral: Peripheral, reset: bool) {
     });
 }
 
-#[cfg(any(esp32c6, esp32h2))]
+#[cfg(any(esp32c5, esp32c6, esp32h2))]
 fn assert_peri_reset(peripheral: Peripheral, reset: bool) {
     let system = SYSTEM::regs();
 
@@ -1086,6 +1091,7 @@ impl Cpu {
     }
 
     /// Returns an iterator over the "other" cores.
+    #[allow(unused)]
     #[inline(always)]
     pub(crate) fn other() -> impl Iterator<Item = Self> {
         cfg_if::cfg_if! {
@@ -1101,6 +1107,7 @@ impl Cpu {
     }
 
     /// Returns an iterator over all cores.
+    #[allow(unused)]
     #[inline(always)]
     pub(crate) fn all() -> impl Iterator<Item = Self> {
         cfg_if::cfg_if! {
@@ -1134,6 +1141,7 @@ pub(crate) fn raw_core() -> usize {
     }
 }
 
+#[cfg(soc_has_lpwr)]
 use crate::rtc_cntl::SocResetReason;
 
 /// Source of the wakeup event
@@ -1195,6 +1203,7 @@ pub fn software_reset_cpu(cpu: Cpu) {
 
 /// Retrieves the reason for the last reset as a SocResetReason enum value.
 /// Returns `None` if the reset reason cannot be determined.
+#[cfg(soc_has_lpwr)]
 #[instability::unstable]
 #[inline]
 pub fn reset_reason() -> Option<SocResetReason> {
@@ -1202,6 +1211,7 @@ pub fn reset_reason() -> Option<SocResetReason> {
 }
 
 /// Retrieves the cause of the last wakeup event as a SleepSource enum value.
+#[cfg(soc_has_lpwr)]
 #[instability::unstable]
 #[inline]
 pub fn wakeup_cause() -> SleepSource {

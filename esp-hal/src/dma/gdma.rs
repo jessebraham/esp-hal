@@ -108,7 +108,7 @@ impl AnyGdmaTxChannel<'_> {
         DMA::regs().int_ch(self.channel as usize)
     }
     #[inline(always)]
-    #[cfg(any(esp32c6, esp32h2))]
+    #[cfg(any(esp32c5, esp32c6, esp32h2))]
     fn int(&self) -> &pac::dma::out_int_ch::OUT_INT_CH {
         DMA::regs().out_int_ch(self.channel as usize)
     }
@@ -151,9 +151,15 @@ impl RegisterAccess for AnyGdmaTxChannel<'_> {
     }
 
     fn set_link_addr(&self, address: u32) {
-        self.ch()
-            .out_link()
-            .modify(|_, w| unsafe { w.outlink_addr().bits(address) });
+        cfg_if::cfg_if! {
+            if #[cfg(esp32c5)] {
+                todo!() // FIXME
+            } else {
+                self.ch()
+                    .out_link()
+                    .modify(|_, w| unsafe { w.outlink_addr().bits(address) });
+            }
+        }
     }
 
     fn start(&self) {
@@ -357,7 +363,7 @@ impl AnyGdmaRxChannel<'_> {
     }
 
     #[inline(always)]
-    #[cfg(any(esp32c6, esp32h2))]
+    #[cfg(any(esp32c5, esp32c6, esp32h2))]
     fn int(&self) -> &pac::dma::in_int_ch::IN_INT_CH {
         DMA::regs().in_int_ch(self.channel as usize)
     }
@@ -401,9 +407,15 @@ impl RegisterAccess for AnyGdmaRxChannel<'_> {
     }
 
     fn set_link_addr(&self, address: u32) {
-        self.ch()
-            .in_link()
-            .modify(|_, w| unsafe { w.inlink_addr().bits(address) });
+        cfg_if::cfg_if! {
+            if #[cfg(esp32c5)] {
+                todo!() // FIXME
+            } else {
+                self.ch()
+                    .in_link()
+                    .modify(|_, w| unsafe { w.inlink_addr().bits(address) });
+            }
+        }
     }
 
     fn start(&self) {
@@ -709,7 +721,7 @@ cfg_if::cfg_if! {
         impl_channel!(0, DMA_CH0);
         impl_channel!(1, DMA_CH1);
         impl_channel!(2, DMA_CH2);
-    } else if #[cfg(any(esp32c6, esp32h2))] {
+    } else if #[cfg(any(esp32c5, esp32c6, esp32h2))] {
         const CHANNEL_COUNT: usize = 3;
         impl_channel!(0, DMA_IN_CH0, DMA_OUT_CH0);
         impl_channel!(1, DMA_IN_CH1, DMA_OUT_CH1);

@@ -7,7 +7,7 @@ pub fn debugger_connected() -> bool {
         xtensa_lx::is_debugger_attached()
     }
 
-    #[cfg(riscv)]
+    #[cfg(soc_has_assist_debug)]
     {
         crate::peripherals::ASSIST_DEBUG::regs()
             .core_0_debug_mode()
@@ -16,7 +16,7 @@ pub fn debugger_connected() -> bool {
             .bit_is_set()
     }
 
-    #[cfg(not(any(xtensa, riscv)))]
+    #[cfg(not(any(xtensa, soc_has_assist_debug)))]
     {
         false
     }

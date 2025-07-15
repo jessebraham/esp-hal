@@ -25,7 +25,7 @@
 #![cfg_attr(esp32h2, doc = "* 96MHz")]
 #![cfg_attr(esp32c2, doc = "* 120MHz")]
 #![cfg_attr(not(any(esp32c2, esp32h2)), doc = "* 160MHz")]
-#![cfg_attr(xtensa, doc = "* 240MHz")]
+#![cfg_attr(any(esp32c5, xtensa), doc = "* 240MHz")]
 //! ### Frozen Clock Frequencies
 //!
 //! Once the clock configuration is applied, the clock frequencies become
@@ -45,6 +45,7 @@
 //! ```
 #![cfg_attr(not(feature = "rt"), expect(unused))]
 
+#[allow(unused)]
 use core::{cell::Cell, marker::PhantomData};
 
 #[cfg(bt)]
@@ -55,11 +56,13 @@ use crate::peripherals::IEEE802154;
 use crate::peripherals::WIFI;
 #[cfg(any(esp32, esp32c2))]
 use crate::rtc_cntl::RtcClock;
+#[allow(unused)]
 use crate::{private::Sealed, time::Rate};
 
 #[cfg_attr(esp32, path = "clocks_ll/esp32.rs")]
 #[cfg_attr(esp32c2, path = "clocks_ll/esp32c2.rs")]
 #[cfg_attr(esp32c3, path = "clocks_ll/esp32c3.rs")]
+#[cfg_attr(esp32c5, path = "clocks_ll/esp32c5.rs")]
 #[cfg_attr(esp32c6, path = "clocks_ll/esp32c6.rs")]
 #[cfg_attr(esp32h2, path = "clocks_ll/esp32h2.rs")]
 #[cfg_attr(esp32s2, path = "clocks_ll/esp32s2.rs")]
@@ -109,7 +112,7 @@ pub enum CpuClock {
     _160MHz = 160,
 
     /// 240MHz CPU clock
-    #[cfg(xtensa)]
+    #[cfg(any(esp32c5, xtensa))]
     _240MHz = 240,
 }
 
@@ -487,6 +490,19 @@ impl Clocks {
             apb_clock: apb_freq.frequency(),
             xtal_clock: xtal_freq.frequency(),
         }
+    }
+}
+
+#[cfg(esp32c5)]
+impl Clocks {
+    fn measure_xtal_frequency() -> XtalClock {
+        todo!()
+    }
+
+    /// Configure the CPU clock speed.
+    pub(crate) fn configure(cpu_clock_speed: CpuClock) -> Self {
+        let _ = cpu_clock_speed;
+        todo!()
     }
 }
 

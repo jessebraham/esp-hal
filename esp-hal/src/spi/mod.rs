@@ -9,6 +9,7 @@
 //! more information on these modes, please refer to the documentation in their
 //! respective modules.
 
+#[cfg(any(gdma, pdma))]
 use crate::dma::DmaError;
 
 pub mod master;
@@ -23,6 +24,7 @@ crate::unstable_module! {
 #[non_exhaustive]
 pub enum Error {
     /// Error occurred due to a DMA-related issue.
+    #[cfg(any(gdma, pdma))]
     #[cfg(feature = "unstable")]
     #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
     #[allow(clippy::enum_variant_names, reason = "DMA is unstable")]
@@ -39,6 +41,7 @@ pub enum Error {
     Unknown,
 }
 
+#[cfg(any(gdma, pdma))]
 #[doc(hidden)]
 #[cfg(feature = "unstable")]
 impl From<DmaError> for Error {
@@ -47,6 +50,7 @@ impl From<DmaError> for Error {
     }
 }
 
+#[cfg(any(gdma, pdma))]
 #[doc(hidden)]
 #[cfg(not(feature = "unstable"))]
 impl From<DmaError> for Error {

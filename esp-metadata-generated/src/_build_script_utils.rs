@@ -882,11 +882,132 @@ impl Chip {
             Self::Esp32c5 => Config {
                 architecture: "riscv",
                 target: "riscv32imac-unknown-none-elf",
-                symbols: &["esp32c5", "riscv", "single_core", "has_dram_region"],
+                symbols: &[
+                    "esp32c5",
+                    "riscv",
+                    "single_core",
+                    "soc_has_dma",
+                    "soc_has_gpio",
+                    "soc_has_i2c0",
+                    "soc_has_io_mux",
+                    "soc_has_interrupt_core0",
+                    "soc_has_intpri",
+                    "soc_has_lp_aon",
+                    "soc_has_lp_io",
+                    "soc_has_lp_io_mux",
+                    "soc_has_pcr",
+                    "soc_has_plic_mx",
+                    "soc_has_spi0",
+                    "soc_has_spi1",
+                    "soc_has_spi2",
+                    "soc_has_system",
+                    "soc_has_systimer",
+                    "soc_has_uart0",
+                    "soc_has_uart1",
+                    "soc_has_dma_ch0",
+                    "soc_has_dma_ch1",
+                    "soc_has_dma_ch2",
+                    "soc_has_sw_interrupt",
+                    "gdma",
+                    "plic",
+                    "lp_core",
+                    "dma",
+                    "gpio",
+                    "i2c_master",
+                    "interrupts",
+                    "io_mux",
+                    "spi_master",
+                    "spi_slave",
+                    "systimer",
+                    "uart",
+                    "i2c_master_i2c0",
+                    "spi_master_spi2",
+                    "spi_slave_spi2",
+                    "uart_uart0",
+                    "uart_uart1",
+                    "gpio_gpio_function=\"1\"",
+                    "gpio_constant_0_input=\"60\"",
+                    "gpio_constant_1_input=\"56\"",
+                    "gpio_func_in_sel_offset=\"0\"",
+                    "gpio_input_signal_max=\"116\"",
+                    "gpio_output_signal_max=\"128\"",
+                    "i2c_master_has_fsm_timeouts",
+                    "i2c_master_has_hw_bus_clear",
+                    "i2c_master_has_bus_timeout_enable",
+                    "i2c_master_can_estimate_nack_reason",
+                    "i2c_master_has_conf_update",
+                    "i2c_master_has_reliable_fsm_reset",
+                    "i2c_master_has_arbitration_en",
+                    "i2c_master_has_tx_fifo_watermark",
+                    "i2c_master_bus_timeout_is_exponential",
+                    "i2c_master_max_bus_timeout=\"31\"",
+                    "i2c_master_ll_intr_mask=\"262143\"",
+                    "i2c_master_fifo_size=\"32\"",
+                    "interrupts_status_registers=\"3\"",
+                    "has_dram_region",
+                ],
                 cfgs: &[
                     "cargo:rustc-cfg=esp32c5",
                     "cargo:rustc-cfg=riscv",
                     "cargo:rustc-cfg=single_core",
+                    "cargo:rustc-cfg=soc_has_dma",
+                    "cargo:rustc-cfg=soc_has_gpio",
+                    "cargo:rustc-cfg=soc_has_i2c0",
+                    "cargo:rustc-cfg=soc_has_io_mux",
+                    "cargo:rustc-cfg=soc_has_interrupt_core0",
+                    "cargo:rustc-cfg=soc_has_intpri",
+                    "cargo:rustc-cfg=soc_has_lp_aon",
+                    "cargo:rustc-cfg=soc_has_lp_io",
+                    "cargo:rustc-cfg=soc_has_lp_io_mux",
+                    "cargo:rustc-cfg=soc_has_pcr",
+                    "cargo:rustc-cfg=soc_has_plic_mx",
+                    "cargo:rustc-cfg=soc_has_spi0",
+                    "cargo:rustc-cfg=soc_has_spi1",
+                    "cargo:rustc-cfg=soc_has_spi2",
+                    "cargo:rustc-cfg=soc_has_system",
+                    "cargo:rustc-cfg=soc_has_systimer",
+                    "cargo:rustc-cfg=soc_has_uart0",
+                    "cargo:rustc-cfg=soc_has_uart1",
+                    "cargo:rustc-cfg=soc_has_dma_ch0",
+                    "cargo:rustc-cfg=soc_has_dma_ch1",
+                    "cargo:rustc-cfg=soc_has_dma_ch2",
+                    "cargo:rustc-cfg=soc_has_sw_interrupt",
+                    "cargo:rustc-cfg=gdma",
+                    "cargo:rustc-cfg=plic",
+                    "cargo:rustc-cfg=lp_core",
+                    "cargo:rustc-cfg=dma",
+                    "cargo:rustc-cfg=gpio",
+                    "cargo:rustc-cfg=i2c_master",
+                    "cargo:rustc-cfg=interrupts",
+                    "cargo:rustc-cfg=io_mux",
+                    "cargo:rustc-cfg=spi_master",
+                    "cargo:rustc-cfg=spi_slave",
+                    "cargo:rustc-cfg=systimer",
+                    "cargo:rustc-cfg=uart",
+                    "cargo:rustc-cfg=i2c_master_i2c0",
+                    "cargo:rustc-cfg=spi_master_spi2",
+                    "cargo:rustc-cfg=spi_slave_spi2",
+                    "cargo:rustc-cfg=uart_uart0",
+                    "cargo:rustc-cfg=uart_uart1",
+                    "cargo:rustc-cfg=gpio_gpio_function=\"1\"",
+                    "cargo:rustc-cfg=gpio_constant_0_input=\"60\"",
+                    "cargo:rustc-cfg=gpio_constant_1_input=\"56\"",
+                    "cargo:rustc-cfg=gpio_func_in_sel_offset=\"0\"",
+                    "cargo:rustc-cfg=gpio_input_signal_max=\"116\"",
+                    "cargo:rustc-cfg=gpio_output_signal_max=\"128\"",
+                    "cargo:rustc-cfg=i2c_master_has_fsm_timeouts",
+                    "cargo:rustc-cfg=i2c_master_has_hw_bus_clear",
+                    "cargo:rustc-cfg=i2c_master_has_bus_timeout_enable",
+                    "cargo:rustc-cfg=i2c_master_can_estimate_nack_reason",
+                    "cargo:rustc-cfg=i2c_master_has_conf_update",
+                    "cargo:rustc-cfg=i2c_master_has_reliable_fsm_reset",
+                    "cargo:rustc-cfg=i2c_master_has_arbitration_en",
+                    "cargo:rustc-cfg=i2c_master_has_tx_fifo_watermark",
+                    "cargo:rustc-cfg=i2c_master_bus_timeout_is_exponential",
+                    "cargo:rustc-cfg=i2c_master_max_bus_timeout=\"31\"",
+                    "cargo:rustc-cfg=i2c_master_ll_intr_mask=\"262143\"",
+                    "cargo:rustc-cfg=i2c_master_fifo_size=\"32\"",
+                    "cargo:rustc-cfg=interrupts_status_registers=\"3\"",
                     "cargo:rustc-cfg=has_dram_region",
                 ],
             },
@@ -2346,20 +2467,27 @@ impl Config {
         println!("cargo:rustc-check-cfg=cfg(usb_serial_jtag)");
         println!("cargo:rustc-check-cfg=cfg(assist_debug_has_region_monitor)");
         println!("cargo:rustc-check-cfg=cfg(esp32c5)");
+        println!("cargo:rustc-check-cfg=cfg(soc_has_intpri)");
+        println!("cargo:rustc-check-cfg=cfg(soc_has_lp_aon)");
+        println!("cargo:rustc-check-cfg=cfg(soc_has_lp_io)");
+        println!("cargo:rustc-check-cfg=cfg(soc_has_lp_io_mux)");
+        println!("cargo:rustc-check-cfg=cfg(soc_has_pcr)");
+        println!("cargo:rustc-check-cfg=cfg(soc_has_plic_mx)");
+        println!("cargo:rustc-check-cfg=cfg(plic)");
+        println!("cargo:rustc-check-cfg=cfg(lp_core)");
+        println!("cargo:rustc-check-cfg=cfg(i2c_master_can_estimate_nack_reason)");
+        println!("cargo:rustc-check-cfg=cfg(i2c_master_has_reliable_fsm_reset)");
         println!("cargo:rustc-check-cfg=cfg(esp32c6)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_atomic)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_hp_apm)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_hp_sys)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_ieee802154)");
-        println!("cargo:rustc-check-cfg=cfg(soc_has_intpri)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_ana)");
-        println!("cargo:rustc-check-cfg=cfg(soc_has_lp_aon)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_apm)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_apm0)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_clkrst)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_i2c0)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_i2c_ana_mst)");
-        println!("cargo:rustc-check-cfg=cfg(soc_has_lp_io)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_peri)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_tee)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_lp_timer)");
@@ -2371,8 +2499,6 @@ impl Config {
         println!("cargo:rustc-check-cfg=cfg(soc_has_otp_debug)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_parl_io)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_pau)");
-        println!("cargo:rustc-check-cfg=cfg(soc_has_pcr)");
-        println!("cargo:rustc-check-cfg=cfg(soc_has_plic_mx)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_pmu)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_etm)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_tee)");
@@ -2385,15 +2511,11 @@ impl Config {
         println!("cargo:rustc-check-cfg=cfg(soc_has_mem2mem13)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_mem2mem14)");
         println!("cargo:rustc-check-cfg=cfg(soc_has_mem2mem15)");
-        println!("cargo:rustc-check-cfg=cfg(plic)");
-        println!("cargo:rustc-check-cfg=cfg(lp_core)");
         println!("cargo:rustc-check-cfg=cfg(pm_support_beacon_wakeup)");
         println!("cargo:rustc-check-cfg=cfg(etm)");
         println!("cargo:rustc-check-cfg=cfg(parl_io)");
         println!("cargo:rustc-check-cfg=cfg(ulp_riscv)");
         println!("cargo:rustc-check-cfg=cfg(ieee802154)");
-        println!("cargo:rustc-check-cfg=cfg(i2c_master_can_estimate_nack_reason)");
-        println!("cargo:rustc-check-cfg=cfg(i2c_master_has_reliable_fsm_reset)");
         println!("cargo:rustc-check-cfg=cfg(wifi_has_wifi6)");
         println!("cargo:rustc-check-cfg=cfg(esp32h2)");
         println!("cargo:rustc-check-cfg=cfg(esp32s2)");
@@ -2427,7 +2549,7 @@ impl Config {
         println!("cargo:rustc-check-cfg=cfg(gpio_constant_1_input, values(\"56\",\"30\"))");
         println!("cargo:rustc-check-cfg=cfg(gpio_func_in_sel_offset, values(\"0\"))");
         println!(
-            "cargo:rustc-check-cfg=cfg(gpio_input_signal_max, values(\"206\",\"100\",\"124\",\"242\",\"255\"))"
+            "cargo:rustc-check-cfg=cfg(gpio_input_signal_max, values(\"206\",\"100\",\"116\",\"124\",\"242\",\"255\"))"
         );
         println!("cargo:rustc-check-cfg=cfg(gpio_output_signal_max, values(\"256\",\"128\"))");
         println!(
