@@ -2,10 +2,6 @@
 
 #![deny(missing_docs)]
 
-pub mod event;
-mod internal;
-pub(crate) mod os_adapter;
-pub(crate) mod state;
 use alloc::{collections::vec_deque::VecDeque, string::String};
 use core::{
     fmt::Debug,
@@ -20,56 +16,8 @@ use enumset::{EnumSet, EnumSetType};
 use esp_config::esp_config_int;
 use esp_hal::{asynch::AtomicWaker, system::Cpu};
 use esp_sync::NonReentrantMutex;
-#[cfg(all(any(feature = "sniffer", feature = "esp-now"), feature = "unstable"))]
-use esp_wifi_sys::include::wifi_pkt_rx_ctrl_t;
-#[cfg(feature = "wifi-eap")]
-use esp_wifi_sys::include::{
-    esp_eap_client_clear_ca_cert,
-    esp_eap_client_clear_certificate_and_key,
-    esp_eap_client_clear_identity,
-    esp_eap_client_clear_new_password,
-    esp_eap_client_clear_password,
-    esp_eap_client_clear_username,
-    esp_eap_client_set_ca_cert,
-    esp_eap_client_set_certificate_and_key,
-    esp_eap_client_set_disable_time_check,
-    esp_eap_client_set_fast_params,
-    esp_eap_client_set_identity,
-    esp_eap_client_set_new_password,
-    esp_eap_client_set_pac_file,
-    esp_eap_client_set_password,
-    esp_eap_client_set_ttls_phase2_method,
-    esp_eap_client_set_username,
-    esp_eap_fast_config,
-    esp_wifi_sta_enterprise_enable,
-};
-#[cfg(all(feature = "sniffer", feature = "unstable"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
-use esp_wifi_sys::include::{
-    esp_wifi_80211_tx,
-    esp_wifi_set_promiscuous,
-    esp_wifi_set_promiscuous_rx_cb,
-    wifi_promiscuous_pkt_t,
-    wifi_promiscuous_pkt_type_t,
-};
-use esp_wifi_sys::{
-    c_types::c_uint,
-    include::{
-        WIFI_INIT_CONFIG_MAGIC,
-        WIFI_PROTOCOL_11AX,
-        WIFI_PROTOCOL_11B,
-        WIFI_PROTOCOL_11G,
-        WIFI_PROTOCOL_11N,
-        WIFI_PROTOCOL_LR,
-        esp_wifi_connect_internal,
-        esp_wifi_disconnect_internal,
-        wifi_init_config_t,
-        wifi_scan_channel_bitmap_t,
-    },
-};
+use esp_wifi_sys::{c_types::c_uint, include::*};
 use num_derive::FromPrimitive;
-#[doc(hidden)]
-pub(crate) use os_adapter::*;
 use portable_atomic::{AtomicUsize, Ordering};
 use procmacros::BuilderLite;
 #[cfg(feature = "serde")]
@@ -77,18 +25,10 @@ use serde::{Deserialize, Serialize};
 #[cfg(all(feature = "smoltcp", feature = "unstable"))]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 use smoltcp::phy::{Device, DeviceCapabilities, RxToken, TxToken};
-pub use state::*;
 
-use crate::{
-    Controller,
-    common_adapter::*,
-    esp_wifi_result,
-    hal::ram,
-    wifi::private::PacketBuffer,
-};
-
-const MTU: usize = esp_config_int!(usize, "ESP_RADIO_CONFIG_WIFI_MTU");
-
+pub(crate) use self::os_adapter::*;
+use self::private::PacketBuffer;
+pub use self::state::*;
 #[cfg(all(feature = "csi", esp32c6))]
 use crate::binary::include::wifi_csi_acquire_config_t;
 #[cfg(feature = "csi")]
@@ -102,57 +42,20 @@ use crate::binary::include::{
     esp_wifi_set_csi_rx_cb,
     wifi_csi_config_t,
 };
-use crate::binary::{
-    c_types,
-    include::{
-        self,
-        __BindgenBitfieldUnit,
-        esp_err_t,
-        esp_interface_t_ESP_IF_WIFI_AP,
-        esp_interface_t_ESP_IF_WIFI_STA,
-        esp_supplicant_deinit,
-        esp_supplicant_init,
-        esp_wifi_deinit_internal,
-        esp_wifi_get_mode,
-        esp_wifi_init_internal,
-        esp_wifi_internal_free_rx_buffer,
-        esp_wifi_internal_reg_rxcb,
-        esp_wifi_internal_tx,
-        esp_wifi_scan_start,
-        esp_wifi_set_config,
-        esp_wifi_set_country,
-        esp_wifi_set_mode,
-        esp_wifi_set_protocol,
-        esp_wifi_set_tx_done_cb,
-        esp_wifi_sta_get_rssi,
-        esp_wifi_start,
-        esp_wifi_stop,
-        g_wifi_default_wpa_crypto_funcs,
-        wifi_active_scan_time_t,
-        wifi_ap_config_t,
-        wifi_auth_mode_t,
-        wifi_cipher_type_t_WIFI_CIPHER_TYPE_CCMP,
-        wifi_config_t,
-        wifi_country_policy_t_WIFI_COUNTRY_POLICY_MANUAL,
-        wifi_country_t,
-        wifi_interface_t,
-        wifi_interface_t_WIFI_IF_AP,
-        wifi_interface_t_WIFI_IF_STA,
-        wifi_mode_t,
-        wifi_mode_t_WIFI_MODE_AP,
-        wifi_mode_t_WIFI_MODE_APSTA,
-        wifi_mode_t_WIFI_MODE_NULL,
-        wifi_mode_t_WIFI_MODE_STA,
-        wifi_pmf_config_t,
-        wifi_scan_config_t,
-        wifi_scan_threshold_t,
-        wifi_scan_time_t,
-        wifi_scan_type_t_WIFI_SCAN_TYPE_ACTIVE,
-        wifi_scan_type_t_WIFI_SCAN_TYPE_PASSIVE,
-        wifi_sort_method_t_WIFI_CONNECT_AP_BY_SIGNAL,
-        wifi_sta_config_t,
-    },
+use crate::{
+    Controller,
+    binary::{c_types, include},
+    common_adapter::*,
+    esp_wifi_result,
+    hal::ram,
 };
+
+pub mod event;
+mod internal;
+pub(crate) mod os_adapter;
+pub(crate) mod state;
+
+const MTU: usize = esp_config_int!(usize, "ESP_RADIO_CONFIG_WIFI_MTU");
 
 /// Supported Wi-Fi authentication methods.
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq, PartialOrd)]
@@ -1415,7 +1318,7 @@ pub enum InternalWifiError {
     /// Invalid argument
     InvalidArg       = 0x102,
 
-    /// Wi-Fi driver was not installed by [esp_wifi_init](crate::binary::include::esp_wifi_init)
+    /// Wi-Fi driver was not installed by [esp_wifi_init]
     NotInit          = 0x3001,
 
     /// Wi-Fi driver was not started by [esp_wifi_start]
@@ -2170,6 +2073,7 @@ impl RxControlInfo {
         rx_control_info
     }
 }
+
 /// Represents a Wi-Fi packet in promiscuous mode.
 #[cfg(all(feature = "sniffer", feature = "unstable"))]
 #[instability::unstable]
@@ -2183,6 +2087,7 @@ pub struct PromiscuousPkt<'a> {
     /// Data contained in the received packet.
     pub data: &'a [u8],
 }
+
 #[cfg(all(feature = "sniffer", feature = "unstable"))]
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
 impl PromiscuousPkt<'_> {
@@ -2222,9 +2127,9 @@ unsafe extern "C" fn promiscuous_rx_cb(buf: *mut core::ffi::c_void, frame_type: 
     }
 }
 
+/// A Wi-Fi sniffer.
 #[cfg(all(feature = "sniffer", feature = "unstable"))]
 #[instability::unstable]
-/// A Wi-Fi sniffer.
 #[non_exhaustive]
 pub struct Sniffer<'d> {
     _phantom: PhantomData<&'d ()>,
@@ -2561,6 +2466,7 @@ pub(crate) fn apply_power_saving(ps: PowerSaveMode) -> Result<(), WifiError> {
 }
 
 struct FreeApListOnDrop;
+
 impl FreeApListOnDrop {
     pub fn defuse(self) {
         core::mem::forget(self);
