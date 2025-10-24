@@ -40,7 +40,7 @@ jobs:
   # Build Packages
 
   esp-hal:
-    runs-on: macos-m1-self-hosted
+    runs-on: ubuntu-latest
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/target
       CI: 1
