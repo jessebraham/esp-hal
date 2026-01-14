@@ -10,6 +10,7 @@
 #![cfg_attr(esp32s3, doc = "**ESP32-S3**")]
 #![cfg_attr(esp32c2, doc = "**ESP32-C2**")]
 #![cfg_attr(esp32c3, doc = "**ESP32-C3**")]
+#![cfg_attr(esp32c5, doc = "**ESP32-C5**")]
 #![cfg_attr(esp32c6, doc = "**ESP32-C6**")]
 #![cfg_attr(esp32h2, doc = "**ESP32-H2**")]
 //! . Please ensure you are reading the correct [documentation] for your target
@@ -487,11 +488,13 @@ pub(crate) mod private {
 
     pub trait Sealed {}
 
+    #[allow(unused)]
     #[non_exhaustive]
     #[doc(hidden)]
     /// Magical incantation to gain access to internal APIs.
     pub struct Internal;
 
+    #[allow(unused)]
     impl Internal {
         /// Obtain magical powers to access internal APIs.
         ///
@@ -509,7 +512,10 @@ pub(crate) mod private {
         }
     }
 
+    #[allow(unused)]
     pub(crate) struct OnDrop<F: FnOnce()>(ManuallyDrop<F>);
+
+    #[allow(unused)]
     impl<F: FnOnce()> OnDrop<F> {
         pub fn new(cb: F) -> Self {
             Self(ManuallyDrop::new(cb))
@@ -610,6 +616,7 @@ pub struct Config {
     psram: psram::PsramConfig,
 }
 
+#[allow(unused)]
 #[procmacros::doc_replace]
 /// Initialize the system.
 ///
@@ -634,9 +641,11 @@ pub fn init(config: Config) -> Peripherals {
     let mut peripherals = Peripherals::take();
 
     // RTC domain must be enabled before we try to disable
+    #[cfg(soc_has_lpwr)]
     let mut rtc = crate::rtc_cntl::Rtc::new(peripherals.LPWR.reborrow());
 
     // Handle watchdog configuration with defaults
+    #[cfg(soc_has_lpwr)]
     cfg_if::cfg_if! {
         if #[cfg(feature = "unstable")]
         {
@@ -702,6 +711,7 @@ pub fn init(config: Config) -> Peripherals {
     #[cfg(esp32)]
     crate::time::time_init();
 
+    #[cfg(soc_has_gpio)]
     crate::gpio::interrupt::bind_default_interrupt_handler();
 
     #[cfg(feature = "psram")]

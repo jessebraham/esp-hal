@@ -352,7 +352,7 @@ pub trait RtcPin: Pin {
     fn rtc_number(&self) -> u8;
 
     /// Configure the pin
-    #[cfg(any(xtensa, esp32c6))]
+    #[cfg(any(xtensa, esp32c5, esp32c6))]
     #[doc(hidden)]
     fn rtc_set_config(&self, input_enable: bool, mux: bool, func: RtcFunction);
 
@@ -364,7 +364,7 @@ pub trait RtcPin: Pin {
     ///
     /// The `level` argument needs to be a valid setting for the
     /// `rtc_cntl.gpio_wakeup.gpio_pinX_int_type`.
-    #[cfg(any(esp32c3, esp32c2, esp32c6))]
+    #[cfg(any(esp32c3, esp32c2, esp32c5, esp32c6))]
     #[doc(hidden)]
     unsafe fn apply_wakeup(&self, wakeup: bool, level: u8);
 }
@@ -2246,7 +2246,7 @@ impl RtcPin for AnyPin<'_> {
         }
     }
 
-    #[cfg(any(xtensa, esp32c6))]
+    #[cfg(any(xtensa, esp32c5, esp32c6))]
     fn rtc_set_config(&self, input_enable: bool, mux: bool, func: RtcFunction) {
         for_each_rtcio_pin! {
             (self, target) => { RtcPin::rtc_set_config(&target, input_enable, mux, func) };
@@ -2259,7 +2259,7 @@ impl RtcPin for AnyPin<'_> {
         }
     }
 
-    #[cfg(any(esp32c2, esp32c3, esp32c6))]
+    #[cfg(any(esp32c2, esp32c3, esp32c5, esp32c6))]
     unsafe fn apply_wakeup(&self, wakeup: bool, level: u8) {
         for_each_rtcio_pin! {
             (self, target) => { unsafe { RtcPin::apply_wakeup(&target, wakeup, level) } };

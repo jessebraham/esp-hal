@@ -15,6 +15,7 @@ pub use pac::Interrupt;
 pub(crate) use crate::soc::pac;
 
 /// Macro to create a peripheral structure.
+#[allow(unused)]
 macro_rules! create_peripheral {
     ($(#[$attr:meta])? $name:ident <= virtual ($($interrupt:ident: { $bind:ident, $enable:ident, $disable:ident }),*)) => {
         $(#[$attr])?
@@ -134,6 +135,7 @@ for_each_peripheral! {
     (all $( ($name:ident <= $from_pac:tt $interrupts:tt $(($unstable:ident))?) ),*) => {
         // We need a way to ignore the "unstable" marker, but macros can't generate attributes or struct fields.
         // The solution is printing an empty doc comment.
+        #[allow(unused)]
         macro_rules! ignore { ($any:tt) => {""} }
 
         /// The `Peripherals` struct provides access to all of the hardware peripherals on the chip.

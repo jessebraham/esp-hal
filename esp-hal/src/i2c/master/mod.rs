@@ -1873,7 +1873,7 @@ impl Driver<'_> {
         Ok(())
     }
 
-    #[cfg(any(esp32c2, esp32c3, esp32c6, esp32h2, esp32s3))]
+    #[cfg(any(esp32c2, esp32c3, esp32c5, esp32c6, esp32h2, esp32s3))]
     /// Sets the frequency of the I2C interface by calculating and applying the
     /// associated timings - corresponds to i2c_ll_cal_bus_clk and
     /// i2c_ll_set_bus_timing in ESP-IDF

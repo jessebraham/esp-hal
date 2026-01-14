@@ -990,7 +990,7 @@ impl<'d> UartRx<'d, Async> {
             }
 
             cfg_if::cfg_if! {
-                if #[cfg(any(esp32c6, esp32h2))] {
+                if #[cfg(any(esp32c5, esp32c6, esp32h2))] {
                     let reg_en = self.regs().tout_conf();
                 } else {
                     let reg_en = self.regs().conf1();
@@ -1905,7 +1905,7 @@ where
         }
 
         fn rst_core(_reg_block: &RegisterBlock, _enable: bool) {
-            #[cfg(not(any(esp32, esp32s2, esp32c6, esp32h2)))]
+            #[cfg(not(any(esp32, esp32s2, esp32c5, esp32c6, esp32h2)))]
             _reg_block
                 .clk_conf()
                 .modify(|_, w| w.rst_core().bit(_enable));
@@ -2893,7 +2893,7 @@ impl Info {
             cfg_if::cfg_if! {
                 if #[cfg(esp32)] {
                     let reg_thrhd = register_block.conf1();
-                } else if #[cfg(any(esp32c6, esp32h2))] {
+                } else if #[cfg(any(esp32c5, esp32c6, esp32h2))] {
                     let reg_thrhd = register_block.tout_conf();
                 } else {
                     let reg_thrhd = register_block.mem_conf();
@@ -2903,7 +2903,7 @@ impl Info {
         }
 
         cfg_if::cfg_if! {
-            if #[cfg(any(esp32c6, esp32h2))] {
+            if #[cfg(any(esp32c5, esp32c6, esp32h2))] {
                 let reg_en = register_block.tout_conf();
             } else {
                 let reg_en = register_block.conf1();
@@ -2937,8 +2937,7 @@ impl Info {
         };
 
         cfg_if::cfg_if! {
-            if #[cfg(any(esp32c2, esp32c3, esp32s3, esp32c6, esp32h2))] {
-
+            if #[cfg(any(esp32c2, esp32c3, esp32s3, esp32c5, esp32c6, esp32h2))] {
                 const MAX_DIV: u32 = 0b1111_1111_1111 - 1;
                 let clk_div = (clk.div_ceil(MAX_DIV)).div_ceil(config.baudrate);
 
@@ -3050,7 +3049,7 @@ impl Info {
                 xoff_threshold,
             } => {
                 cfg_if::cfg_if! {
-                    if #[cfg(any(esp32c6, esp32h2))] {
+                    if #[cfg(any(esp32c5, esp32c6, esp32h2))] {
                         self.regs().swfc_conf0().modify(|_, w| w.xonoff_del().set_bit().sw_flow_con_en().set_bit());
                         self.regs().swfc_conf1().modify(|_, w| unsafe { w.xon_threshold().bits(xon_threshold).xoff_threshold().bits(xoff_threshold)});
                         self.regs().swfc_conf0().modify(|_, w| unsafe { w.xon_char().bits(xon_char).xoff_char().bits(xoff_char) });
@@ -3069,7 +3068,7 @@ impl Info {
             }
             SwFlowControl::Disabled => {
                 cfg_if::cfg_if! {
-                    if #[cfg(any(esp32c6, esp32h2))] {
+                    if #[cfg(any(esp32c5, esp32c6, esp32h2))] {
                         let reg = self.regs().swfc_conf0();
                     } else {
                         let reg = self.regs().flow_conf();
@@ -3100,7 +3099,7 @@ impl Info {
             cfg_if::cfg_if! {
                 if #[cfg(esp32)] {
                     self.regs().conf1().modify(|_, w| unsafe { w.rx_flow_thrhd().bits(threshold) });
-                } else if #[cfg(any(esp32c6, esp32h2))] {
+                } else if #[cfg(any(esp32c5, esp32c6, esp32h2))] {
                     self.regs().hwfc_conf().modify(|_, w| unsafe { w.rx_flow_thrhd().bits(threshold) });
                 } else {
                     self.regs().mem_conf().modify(|_, w| unsafe { w.rx_flow_thrhd().bits(threshold as u16) });
@@ -3109,7 +3108,7 @@ impl Info {
         }
 
         cfg_if::cfg_if! {
-            if #[cfg(any(esp32c6, esp32h2))] {
+            if #[cfg(any(esp32c5, esp32c6, esp32h2))] {
                 self.regs().hwfc_conf().modify(|_, w| {
                     w.rx_flow_en().bit(enable)
                 });

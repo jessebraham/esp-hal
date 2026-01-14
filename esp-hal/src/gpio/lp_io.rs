@@ -30,6 +30,8 @@
 use core::marker::PhantomData;
 
 use super::{InputPin, OutputPin, RtcPin};
+#[cfg(esp32c5)]
+use crate::peripherals::LP_IO_MUX;
 use crate::peripherals::{GPIO, LP_AON, LP_IO};
 
 /// A GPIO output pin configured for low power operation
@@ -93,21 +95,45 @@ impl<'d, const PIN: u8> LowPowerInput<'d, PIN> {
     }
 
     fn input_enable(&self, enable: bool) {
-        LP_IO::regs()
+        cfg_if::cfg_if! {
+            if #[cfg(esp32c5)] {
+                let lp_io = LP_IO_MUX::regs();
+            } else {
+                let lp_io = LP_IO::regs();
+            }
+        }
+
+        lp_io
             .gpio(PIN as usize)
             .modify(|_, w| w.fun_ie().bit(enable));
     }
 
     /// Sets pull-up enable for the pin
     pub fn pullup_enable(&self, enable: bool) {
-        LP_IO::regs()
+        cfg_if::cfg_if! {
+            if #[cfg(esp32c5)] {
+                let lp_io = LP_IO_MUX::regs();
+            } else {
+                let lp_io = LP_IO::regs();
+            }
+        }
+
+        lp_io
             .gpio(PIN as usize)
             .modify(|_, w| w.fun_wpu().bit(enable));
     }
 
     /// Sets pull-down enable for the pin
     pub fn pulldown_enable(&self, enable: bool) {
-        LP_IO::regs()
+        cfg_if::cfg_if! {
+            if #[cfg(esp32c5)] {
+                let lp_io = LP_IO_MUX::regs();
+            } else {
+                let lp_io = LP_IO::regs();
+            }
+        }
+
+        lp_io
             .gpio(PIN as usize)
             .modify(|_, w| w.fun_wpd().bit(enable));
     }
@@ -154,21 +180,45 @@ impl<'d, const PIN: u8> LowPowerOutputOpenDrain<'d, PIN> {
     }
 
     fn input_enable(&self, enable: bool) {
-        LP_IO::regs()
+        cfg_if::cfg_if! {
+            if #[cfg(esp32c5)] {
+                let lp_io = LP_IO_MUX::regs();
+            } else {
+                let lp_io = LP_IO::regs();
+            }
+        }
+
+        lp_io
             .gpio(PIN as usize)
             .modify(|_, w| w.fun_ie().bit(enable));
     }
 
     /// Sets pull-up enable for the pin
     pub fn pullup_enable(&self, enable: bool) {
-        LP_IO::regs()
+        cfg_if::cfg_if! {
+            if #[cfg(esp32c5)] {
+                let lp_io = LP_IO_MUX::regs();
+            } else {
+                let lp_io = LP_IO::regs();
+            }
+        }
+
+        lp_io
             .gpio(PIN as usize)
             .modify(|_, w| w.fun_wpu().bit(enable));
     }
 
     /// Sets pull-down enable for the pin
     pub fn pulldown_enable(&self, enable: bool) {
-        LP_IO::regs()
+        cfg_if::cfg_if! {
+            if #[cfg(esp32c5)] {
+                let lp_io = LP_IO_MUX::regs();
+            } else {
+                let lp_io = LP_IO::regs();
+            }
+        }
+
+        lp_io
             .gpio(PIN as usize)
             .modify(|_, w| w.fun_wpd().bit(enable));
     }
@@ -185,7 +235,15 @@ pub(crate) fn init_low_power_pin(pin: u8) {
         .gpio_mux()
         .modify(|r, w| unsafe { w.sel().bits(r.sel().bits() | (1 << pin)) });
 
-    LP_IO::regs()
+    cfg_if::cfg_if! {
+        if #[cfg(esp32c5)] {
+            let lp_io = LP_IO_MUX::regs();
+        } else {
+            let lp_io = LP_IO::regs();
+        }
+    }
+
+    lp_io
         .gpio(pin as usize)
         .modify(|_, w| unsafe { w.mcu_sel().bits(0) });
 }
@@ -240,7 +298,14 @@ macro_rules! lp_gpio {
                             });
 
                         // Configure input, function and select normal operation registers
-                        let lp_io = $crate::peripherals::LP_IO::regs();
+                        cfg_if::cfg_if! {
+                            if #[cfg(esp32c5)] {
+                                let lp_io = $crate::peripherals::LP_IO_MUX::regs();
+                            } else {
+                                let lp_io = $crate::peripherals::LP_IO::regs();
+                            }
+                        }
+
                         lp_io.gpio($gpionum).modify(|_, w| {
                             w.slp_sel().bit(false);
                             w.fun_ie().bit(input_enable);
@@ -253,12 +318,26 @@ macro_rules! lp_gpio {
             #[cfg_attr(docsrs, doc(cfg(feature = "unstable")))]
             impl $crate::gpio::RtcPinWithResistors for paste::paste!($crate::peripherals::[<GPIO $gpionum>]<'_>) {
                 fn rtcio_pullup(&self, enable: bool) {
-                    let lp_io = $crate::peripherals::LP_IO::regs();
+                    cfg_if::cfg_if! {
+                        if #[cfg(esp32c5)] {
+                            let lp_io = $crate::peripherals::LP_IO_MUX::regs();
+                        } else {
+                            let lp_io = $crate::peripherals::LP_IO::regs();
+                        }
+                    }
+
                     lp_io.gpio($gpionum).modify(|_, w| w.fun_wpu().bit(enable));
                 }
 
                 fn rtcio_pulldown(&self, enable: bool) {
-                    let lp_io = $crate::peripherals::LP_IO::regs();
+                    cfg_if::cfg_if! {
+                        if #[cfg(esp32c5)] {
+                            let lp_io = $crate::peripherals::LP_IO_MUX::regs();
+                        } else {
+                            let lp_io = $crate::peripherals::LP_IO::regs();
+                        }
+                    }
+
                     lp_io.gpio($gpionum).modify(|_, w| w.fun_wpd().bit(enable));
                 }
             }
